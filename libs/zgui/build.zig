@@ -7,6 +7,7 @@ pub const Backend = enum {
     glfw_dx12,
     win32_dx12,
     glfw,
+    sdl2,
 };
 
 pub fn build(b: *std.Build) void {
@@ -285,6 +286,17 @@ pub fn build(b: *std.Build) void {
             imgui.addCSourceFiles(.{
                 .files = &.{
                     "libs/imgui/backends/imgui_impl_glfw.cpp",
+                },
+                .flags = cflags,
+            });
+        },
+        .sdl2 => {
+            const zsdl = b.dependency("zsdl", .{});
+            imgui.addIncludePath(zsdl.path("libs/sdl2/include"));
+            imgui.addCSourceFiles(.{
+                .files = &.{
+                    "libs/imgui/backends/imgui_impl_sdl2.cpp",
+                    "libs/imgui/backends/imgui_impl_sdlrenderer2.cpp",
                 },
                 .flags = cflags,
             });
