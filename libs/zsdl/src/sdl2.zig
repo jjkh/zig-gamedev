@@ -1160,6 +1160,39 @@ extern fn SDL_UpperBlit(
     dest_rect: ?*const Rect,
 ) c_int;
 
+pub fn createRgbSurface(
+    w: i32,
+    h: i32,
+    depth: i32,
+    r_mask: u32,
+    g_mask: u32,
+    b_mask: u32,
+    a_mask: u32,
+    flags: u32,
+) !*Surface {
+    return SDL_CreateRGBSurface(
+        flags,
+        @intCast(w),
+        @intCast(h),
+        @intCast(depth),
+        r_mask,
+        g_mask,
+        b_mask,
+        a_mask,
+    ) orelse
+        sdl2.makeError();
+}
+extern fn SDL_CreateRGBSurface(
+    flags: u32,
+    width: c_int,
+    height: c_int,
+    depth: c_int,
+    r_mask: u32,
+    g_mask: u32,
+    b_mask: u32,
+    a_mask: u32,
+) ?*Surface;
+
 //--------------------------------------------------------------------------------------------------
 //
 // Platform-specific Window Management

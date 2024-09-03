@@ -42,7 +42,21 @@ pub const Font = opaque {
     extern fn TTF_RenderText_Shaded(font: *Font, text: [*c]const u8, fg: sdl.Color, bg: sdl.Color) ?*sdl.Surface;
 
     pub fn renderTextBlended(font: *Font, text: [:0]const u8, fg: sdl.Color) !*sdl.Surface {
-        return TTF_RenderText_Blended(font, text, fg) orelse sdl.makeError();
+        if (text.len == 0)
+            return sdl.createRgbSurface(0, 0, 4, 0, 0, 0, 0, 0)
+        else
+            return TTF_RenderText_Blended(font, text, fg) orelse sdl.makeError();
     }
     extern fn TTF_RenderText_Blended(font: *Font, text: [*c]const u8, fg: sdl.Color) ?*sdl.Surface;
+
+    pub fn sizeText(font: *const Font, text: [:0]const u8) !struct { w: i32, h: i32 } {
+        var w: c_int = undefined;
+        var h: c_int = undefined;
+        const result = TTF_SizeText(font, text, &w, &h);
+        return if (result == 0)
+            .{ .w = w, .h = h }
+        else
+            sdl.makeError();
+    }
+    extern fn TTF_SizeText(font: *const Font, text: [*c]const u8, w: *c_int, h: *c_int) c_int;
 };
