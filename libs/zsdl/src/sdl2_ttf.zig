@@ -49,6 +49,14 @@ pub const Font = opaque {
     }
     extern fn TTF_RenderText_Blended(font: *Font, text: [*c]const u8, fg: sdl.Color) ?*sdl.Surface;
 
+    pub fn renderTextBlendedWrapped(font: *Font, text: [:0]const u8, fg: sdl.Color, wrap_length: u32) !*sdl.Surface {
+        if (text.len == 0)
+            return sdl.createRgbSurface(0, 0, 4, 0, 0, 0, 0, 0)
+        else
+            return TTF_RenderText_Blended_Wrapped(font, text, fg, wrap_length) orelse sdl.makeError();
+    }
+    extern fn TTF_RenderText_Blended_Wrapped(font: *Font, text: [*c]const u8, fg: sdl.Color, wrap_length: u32) ?*sdl.Surface;
+
     pub fn sizeText(font: *const Font, text: [:0]const u8) !struct { w: i32, h: i32 } {
         var w: c_int = undefined;
         var h: c_int = undefined;
